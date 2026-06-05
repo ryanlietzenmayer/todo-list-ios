@@ -7,10 +7,6 @@
 
 import Foundation
 
-public struct ToDoItemsData: Decodable {
-    let items: [ToDoItemData]?
-}
-
 public struct ToDoItemData: Decodable {
     let id: Int?
     let taskDescription: String?
