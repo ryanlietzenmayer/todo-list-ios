@@ -10,12 +10,12 @@ import Foundation
 public struct ToDoItemData: Decodable {
     let id: Int?
     let taskDescription: String?
-    let createdDate: Date?
-    let dueDate: Date?
+//    let createdDate: Date?
+//    let dueDate: Date?
     let completed: Bool?
 }
 
-public struct ToDoItem: Identifiable {
+public struct ToDoItem: Identifiable, Hashable {
     public let id: Int
     public let taskDescription: String
     public let createdDate: Date
@@ -43,8 +43,8 @@ extension ToDoItem {
         guard let id = todoItemData.id, let taskDescription = todoItemData.taskDescription else { return nil }
         self.init(id: id,
                   taskDescription: taskDescription,
-                  createdDate: todoItemData.createdDate ?? Date.now,
-                  dueDate: todoItemData.dueDate,
+                  createdDate: Date.now, // todoItemData.createdDate ?? Date.now,
+                  dueDate: Date.now, // todoItemData.dueDate,
                   completed: todoItemData.completed ?? false)
     }
 }

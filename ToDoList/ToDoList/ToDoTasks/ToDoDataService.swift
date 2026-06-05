@@ -23,27 +23,20 @@ extension ToDoServiceError: LocalizedError {
     }
 }
 
-protocol TaskFetching {
+protocol ToDoTasksFetching {
     func tasks() async throws(ToDoServiceError) -> [ToDoItem]
 }
 
-struct ToDoDataService: TaskFetching {
+struct ToDoDataService: ToDoTasksFetching {
     private let client: Networking
-
-    private var searchLimit: Int {
-        if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            return 25
-        } else {
-            return 50
-        }
-    }
 
     init(client: Networking = HTTPClient()) {
         self.client = client
     }
 
     func tasks() async throws(ToDoServiceError) -> [ToDoItem] {
-        guard let baseURL = URL(string: "http://localhost:5041/") else {
+        // note: http://localhost:5041 didn't work
+        guard let baseURL = URL(string: "http://127.0.0.1:5041/") else {
             throw .requestBuildFailure
         }
 
