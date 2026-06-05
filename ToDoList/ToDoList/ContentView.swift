@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    // @Environment
+    public var toDoItems: [ToDoItem]
     var body: some View {
         VStack {
             Header()
         }
         .padding()
+        List(toDoItems) {
+            Task(item: $0)
+        }
     }
 }
 
@@ -32,11 +37,13 @@ struct Header: View {
 
 struct Task: View {
     // @some state environment for a task
+    public var item: ToDoItem
+
     var body: some View {
         HStack {
             Rectangle()
                 .fill(.blue)
-            TaskDetails()
+            TaskDetails(item: item)
             Rectangle()
                 .fill(.blue)
             Rectangle()
@@ -46,6 +53,7 @@ struct Task: View {
 }
 
 struct TaskDetails: View {
+    public var item: ToDoItem
     var body: some View {
         VStack {
             Rectangle()
@@ -59,8 +67,9 @@ struct TaskDetails: View {
 }
 
 #Preview {
-    ContentView()
-    Task()
-    Task()
-    Task()
+    let itemA = ToDoItem(id: 0, taskDescription: "itemA", createdDate: .distantPast, dueDate: .distantFuture, completed: false)
+    let itemB = ToDoItem(id: 1, taskDescription: "itemB", createdDate: .distantPast, dueDate: .distantFuture, completed: true)
+    let itemC = ToDoItem(id: 2, taskDescription: "itemC", createdDate: .distantPast, dueDate: .distantPast, completed: false)
+    let itemD = ToDoItem(id: 3, taskDescription: "itemD", createdDate: .distantPast, dueDate: .distantPast, completed: true)
+    ContentView(toDoItems: [itemA, itemB, itemC, itemD])
 }

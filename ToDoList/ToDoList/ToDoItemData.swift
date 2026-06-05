@@ -19,14 +19,14 @@ public struct ToDoItemData: Decodable {
     let completed: Bool?
 }
 
-public struct ToDoItem {
-    let id: Int
-    let taskDescription: String
-    let createdDate: Date
-    let dueDate: Date?
-    let completed: Bool
+public struct ToDoItem: Identifiable {
+    public let id: Int
+    public let taskDescription: String
+    public let createdDate: Date
+    public let dueDate: Date?
+    public let completed: Bool
 
-    init(id: Int, taskDescription: String, createdDate: Date, dueDate: Date?, completed: Bool) {
+    public init(id: Int, taskDescription: String, createdDate: Date, dueDate: Date?, completed: Bool) {
         self.id = id
         self.taskDescription = taskDescription
         self.createdDate = createdDate
