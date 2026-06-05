@@ -24,11 +24,13 @@ struct ContentView: View {
 struct Header: View {
     var body: some View {
         HStack {
-            Image(systemName: "globe")
+            Image(systemName: "gear")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
+            Spacer()
             Text("Task List")
-            Image(systemName: "globe")
+            Spacer()
+            Image(systemName: "plus")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
         }
@@ -41,13 +43,15 @@ struct Task: View {
 
     var body: some View {
         HStack {
-            Rectangle()
-                .fill(.blue)
+            Button("Edit", systemImage: "pencil", action: {})
+                .labelStyle(.iconOnly)
+            Spacer()
             TaskDetails(item: item)
-            Rectangle()
-                .fill(.blue)
-            Rectangle()
-                .fill(.blue)
+            Spacer()
+            Button("Checkbox", systemImage: "square", action: {})
+                .labelStyle(.iconOnly)
+            Button("Delete", systemImage: "trash", action: {})
+                .labelStyle(.iconOnly)
         }
     }
 }
@@ -56,12 +60,9 @@ struct TaskDetails: View {
     public var item: ToDoItem
     var body: some View {
         VStack {
-            Rectangle()
-                .fill(.red)
-            Rectangle()
-                .fill(.green)
-            Rectangle()
-                .fill(.blue)
+            Text(item.taskDescription)
+            Text(item.dueDateString)
+            Text(item.createdDateString)
         }
     }
 }

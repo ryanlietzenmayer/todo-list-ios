@@ -25,6 +25,13 @@ public struct ToDoItem: Identifiable {
     public let createdDate: Date
     public let dueDate: Date?
     public let completed: Bool
+    
+    public var createdDateString: String {
+        "Created: " + dateString(createdDate)
+    }
+    public var dueDateString: String {
+        "Due: " + dateString(dueDate)
+    }
 
     public init(id: Int, taskDescription: String, createdDate: Date, dueDate: Date?, completed: Bool) {
         self.id = id
@@ -44,4 +51,17 @@ extension ToDoItem {
                   dueDate: todoItemData.dueDate,
                   completed: todoItemData.completed ?? false)
     }
+}
+
+func dateString(_ date: Date?) -> String {
+    
+    guard let date else { return "Undefined" }
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .none
+    
+    // US English Locale (en_US)
+    dateFormatter.locale = Locale(identifier: "en_US")
+    return dateFormatter.string(from: date) // Jan 2, 2001
 }
