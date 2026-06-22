@@ -44,7 +44,7 @@ struct ToDoDataService: ToDoTasksFetching {
 
     /// GET all tasks
     func getTasks() async throws(ToDoServiceError) -> [ToDoItem] {
-//        try await createDefaultTasks()
+        try await createDefaultTasks()
         guard let baseURL else { throw .requestBuildFailure }
 
         let queryItems: [URLQueryItem] = [
@@ -71,28 +71,29 @@ struct ToDoDataService: ToDoTasksFetching {
     /// POST task
     func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem? {
         guard let baseURL else { throw .requestBuildFailure }
-        
+//        let taskA = ToDoItemPostable(taskDescription: "task A empty body")
+
         do {
-            var request = try Request(method: .post, baseURL: baseURL, path: "tasks", queryItems: []).make()
+            var request = try Request(method: .post, baseURL: baseURL, path: "tasks").make()
             
             // Encode the payload into JSON data
             let encoder = JSONEncoder()
             request.httpBody = try encoder.encode(item)
-            
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+
             // Perform the network request using async/await
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            // Ensure the HTTP response is valid (200-299)
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                throw URLError(.badServerResponse)
-            }
-            
+//            let (data, response) = try await URLSession.shared.data(for: request)
+
             // Decode the response
-            let decoder = JSONDecoder()
-            let decodedResponse = try decoder.decode(ToDoItemData.self, from: data)
-            return ToDoItem(from: decodedResponse)
+//            let decoder = JSONDecoder()
+//            let decodedResponse = try decoder.decode(ToDoItemData.self, from: response)
+//            return ToDoItem(from: decodedResponse)
+            
+            let response: ToDoItemData = try await client.run(request: request)
+            return ToDoItem(from: response)
+
         } catch {
-            throw .requestBuildFailure
+            throw .networkFailure(error as! HTTPError)
         }
     }
 
@@ -109,9 +110,10 @@ struct ToDoDataService: ToDoTasksFetching {
 
 extension ToDoDataService {
     public func createDefaultTasks() async throws(ToDoServiceError) {
-        let task1 = ToDoItemData(id: 1, taskDescription: "task 1", completed: false)
-        let task2 = ToDoItemData(id: 2, taskDescription: "task 2", completed: true)
-        let task3 = ToDoItemData(id: 3, taskDescription: "task 3", completed: false)
+        let taskA = ToDoItemPostable(taskDescription: "task A empty body")
+        let task1 = ToDoItemData(id: nil, taskDescription: "task 1 ios", completed: false)
+        let task2 = ToDoItemData(id: nil, taskDescription: "task 2 ios", completed: true)
+        let task3 = ToDoItemData(id: nil, taskDescription: "task 3 ios", completed: false)
         let tasks = [task1, task2, task3]
         for task in tasks {
             do {
