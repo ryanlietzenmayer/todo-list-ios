@@ -44,6 +44,7 @@ struct ToDoDataService: ToDoTasksFetching {
 
     /// GET all tasks
     func getTasks() async throws(ToDoServiceError) -> [ToDoItem] {
+//        try await createDefaultTasks()
         guard let baseURL else { throw .requestBuildFailure }
 
         let queryItems: [URLQueryItem] = [
@@ -71,11 +72,9 @@ struct ToDoDataService: ToDoTasksFetching {
     func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem? {
         guard let baseURL else { throw .requestBuildFailure }
         
-        // Configure the request
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
+            var request = try Request(method: .post, baseURL: baseURL, path: "tasks", queryItems: []).make()
+            
             // Encode the payload into JSON data
             let encoder = JSONEncoder()
             request.httpBody = try encoder.encode(item)
@@ -109,9 +108,17 @@ struct ToDoDataService: ToDoTasksFetching {
 }
 
 extension ToDoDataService {
-    public func createDefaultTasks() {
+    public func createDefaultTasks() async throws(ToDoServiceError) {
         let task1 = ToDoItemData(id: 1, taskDescription: "task 1", completed: false)
         let task2 = ToDoItemData(id: 2, taskDescription: "task 2", completed: true)
         let task3 = ToDoItemData(id: 3, taskDescription: "task 3", completed: false)
+        let tasks = [task1, task2, task3]
+        for task in tasks {
+            do {
+                try await createTask(task)
+            } catch {
+                throw .requestBuildFailure
+            }
+        }
     }
 }

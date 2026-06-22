@@ -38,7 +38,7 @@ final class ToDoListViewModel {
 
                 items = []
 
-                let items = try await service.tasks()
+                let items = try await service.getTasks()
                 guard !Task.isCancelled else { return }
                 self.items = items
             } catch let error as ToDoServiceError {
