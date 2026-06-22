@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ToDoItemData: Decodable {
+public struct ToDoItemData: Encodable, Decodable {
     let id: Int?
     let taskDescription: String?
 //    let createdDate: Date?
