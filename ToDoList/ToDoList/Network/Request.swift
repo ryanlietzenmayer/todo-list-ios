@@ -13,7 +13,7 @@ struct Request {
     let path: String
     let queryItems: [URLQueryItem]
     let headers: [String: String]
-    let body: Data?
+    let body: Encodable?
     let encoder: JSONEncoder
     let cachePolicy: URLRequest.CachePolicy
 
@@ -23,7 +23,7 @@ struct Request {
         path: String,
         queryItems: [URLQueryItem] = [],
         headers: [String: String] = [:],
-        body: Data? = nil,
+        body: Encodable? = nil,
         encoder: JSONEncoder = JSONEncoder(),
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy
     ) {
@@ -62,6 +62,8 @@ struct Request {
             var headers = request.allHTTPHeaderFields ?? [:]
             headers["Content-Type"] = "application/json"
             request.allHTTPHeaderFields = headers
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+
         }
 
         return request

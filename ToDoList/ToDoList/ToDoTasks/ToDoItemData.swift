@@ -14,12 +14,6 @@ public struct ToDoItemData: Encodable, Decodable {
 //    let dueDate: Date?
     let completed: Bool?
 }
-public struct ToDoItemPostable: Encodable {
-    let taskDescription: String?
-//    let createdDate: Date?
-//    let dueDate: Date?
-//    let completed: Bool?
-}
 
 public struct ToDoItem: Identifiable, Hashable {
     public let id: Int

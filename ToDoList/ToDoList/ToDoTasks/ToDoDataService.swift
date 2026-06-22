@@ -71,27 +71,11 @@ struct ToDoDataService: ToDoTasksFetching {
     /// POST task
     func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem? {
         guard let baseURL else { throw .requestBuildFailure }
-//        let taskA = ToDoItemPostable(taskDescription: "task A empty body")
 
         do {
-            var request = try Request(method: .post, baseURL: baseURL, path: "tasks").make()
-            
-            // Encode the payload into JSON data
-            let encoder = JSONEncoder()
-            request.httpBody = try encoder.encode(item)
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-
-            // Perform the network request using async/await
-//            let (data, response) = try await URLSession.shared.data(for: request)
-
-            // Decode the response
-//            let decoder = JSONDecoder()
-//            let decodedResponse = try decoder.decode(ToDoItemData.self, from: response)
-//            return ToDoItem(from: decodedResponse)
-            
+            let request = try Request(method: .post, baseURL: baseURL, path: "tasks", body: item).make()
             let response: ToDoItemData = try await client.run(request: request)
             return ToDoItem(from: response)
-
         } catch {
             throw .networkFailure(error as! HTTPError)
         }
@@ -110,7 +94,6 @@ struct ToDoDataService: ToDoTasksFetching {
 
 extension ToDoDataService {
     public func createDefaultTasks() async throws(ToDoServiceError) {
-        let taskA = ToDoItemPostable(taskDescription: "task A empty body")
         let task1 = ToDoItemData(id: nil, taskDescription: "task 1 ios", completed: false)
         let task2 = ToDoItemData(id: nil, taskDescription: "task 2 ios", completed: true)
         let task3 = ToDoItemData(id: nil, taskDescription: "task 3 ios", completed: false)
