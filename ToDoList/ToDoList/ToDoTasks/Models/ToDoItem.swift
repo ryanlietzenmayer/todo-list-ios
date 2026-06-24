@@ -1,19 +1,11 @@
 //
-//  ToDoItemData.swift
+//  ToDoItem.swift
 //  ToDoList
 //
-//  Created by Meng Wang on 6/5/26.
+//  Created by Meng Wang on 6/24/26.
 //
 
 import Foundation
-
-public struct ToDoItemData: Encodable, Decodable {
-    let id: Int?
-    let taskDescription: String?
-//    let createdDate: Date?
-//    let dueDate: Date?
-    let completed: Bool?
-}
 
 public struct ToDoItem: Identifiable, Hashable {
     public let id: Int
@@ -41,10 +33,15 @@ public struct ToDoItem: Identifiable, Hashable {
 extension ToDoItem {
     init?(from todoItemData: ToDoItemData) {
         guard let id = todoItemData.id, let taskDescription = todoItemData.taskDescription else { return nil }
+                
+        let isoFormatter = ISO8601DateFormatter()
+        let createdDate = isoFormatter.date(from: todoItemData.createdDate ?? "")
+        let dueDate = isoFormatter.date(from: todoItemData.dueDate ?? "")
+
         self.init(id: id,
                   taskDescription: taskDescription,
-                  createdDate: Date.now, // todoItemData.createdDate ?? Date.now,
-                  dueDate: Date.now, // todoItemData.dueDate,
+                  createdDate: createdDate ?? Date.now,
+                  dueDate: dueDate,
                   completed: todoItemData.completed ?? false)
     }
 }
