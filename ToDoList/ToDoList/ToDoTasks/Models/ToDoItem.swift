@@ -12,7 +12,7 @@ public struct ToDoItem: Identifiable, Hashable {
     public let taskDescription: String
     public let createdDate: Date
     public let dueDate: Date?
-    public let completed: Bool
+    public var completed: Bool
     
     public var createdDateString: String {
         "Created: " + dateString(createdDate)

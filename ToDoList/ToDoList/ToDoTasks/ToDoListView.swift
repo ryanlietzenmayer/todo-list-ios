@@ -15,13 +15,14 @@ struct ToDoListView: View {
         }
         .padding()
         List(viewModel.items) {
-            TaskView(item: $0)
+            TaskView(itemViewModel: ToDoItemViewModel(item: $0))
         }
     }
 
     var header: some View {
         HStack {
-            Button("Edit", systemImage: "gearshape.fill", action: {
+            
+            Button("Settings", systemImage: "gearshape.fill", action: {
                 viewModel.getAllToDoItems()
             })
             .labelStyle(.iconOnly)
@@ -47,25 +48,36 @@ struct ToDoListView: View {
 
 struct TaskView: View {
     // @some state environment for a task
-    public var item: ToDoItem
+    public var itemViewModel: ToDoItemViewModel
 
     var body: some View {
         HStack {
-            Button("Edit", systemImage: "pencil", action: {})
+            Button("Edit", systemImage: "pencil", action: {
+                print("tap pencil")
+            })
                 .labelStyle(.iconOnly)
                 .imageScale(.large)
+                .buttonStyle(BorderlessButtonStyle())
 
             Spacer()
-            TaskDetails(item: item)
+            TaskDetails(item: itemViewModel.item)
             Spacer()
-            Button("Checkbox", systemImage: "square", action: {})
+            Button("Checkbox", systemImage: "square", action: {
+                print("tap square")
+                itemViewModel.toggleCompleted()
+            })
                 .labelStyle(.iconOnly)
                 .imageScale(.large)
+                .buttonStyle(BorderlessButtonStyle())
+            Spacer()
 
-            Button("Delete", systemImage: "trash.fill", action: {})
+            Button("Delete", systemImage: "trash.fill", action: {
+                print("tap trash")
+                itemViewModel.delete()
+            })
                 .labelStyle(.iconOnly)
                 .imageScale(.large)
-
+                .buttonStyle(BorderlessButtonStyle())
         }
     }
 }

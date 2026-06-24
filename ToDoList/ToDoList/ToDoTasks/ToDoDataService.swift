@@ -33,6 +33,8 @@ protocol ToDoTasksFetching {
     func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem
     // PUT
     func putTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem
+    // DELETE
+    func deleteTask(_ id: Int) async throws(ToDoServiceError)
 }
 
 struct ToDoDataService: ToDoTasksFetching {
@@ -94,7 +96,15 @@ struct ToDoDataService: ToDoTasksFetching {
     }
 
     /// DELETE task
-    func deleteTask(_ id: String) async throws(ToDoServiceError) {
+    func deleteTask(_ id: Int) async throws(ToDoServiceError) {
+        guard let baseURL else { throw .requestBuildFailure }
+
+        do {
+            let request = try Request(method: .delete, baseURL: baseURL, path: "tasks/\(id)").make()
+            let response: Data = try await client.run(request: request)
+        } catch {
+            throw .networkFailure(error as! HTTPError)
+        }
     }
 }
 
