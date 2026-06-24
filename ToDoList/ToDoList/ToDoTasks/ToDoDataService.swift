@@ -10,6 +10,7 @@ import Foundation
 enum ToDoServiceError: Error {
     case networkFailure(HTTPError)
     case requestBuildFailure
+    case invalidDataFailure
 }
 
 extension ToDoServiceError: LocalizedError {
@@ -19,6 +20,8 @@ extension ToDoServiceError: LocalizedError {
             return "Check your connection and try again."
         case .requestBuildFailure:
             return "Something went wrong. Try again in a moment."
+        case .invalidDataFailure:
+            return "Error with data returned."
         }
     }
 }
@@ -27,7 +30,9 @@ protocol ToDoTasksFetching {
     // GET
     func getTasks() async throws(ToDoServiceError) -> [ToDoItem]
     // POST
-    func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem?
+    func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem
+    // PUT
+    func putTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem
 }
 
 struct ToDoDataService: ToDoTasksFetching {
@@ -44,7 +49,6 @@ struct ToDoDataService: ToDoTasksFetching {
 
     /// GET all tasks
     func getTasks() async throws(ToDoServiceError) -> [ToDoItem] {
-        try await createDefaultTasks()
         guard let baseURL else { throw .requestBuildFailure }
 
         let queryItems: [URLQueryItem] = [
@@ -69,34 +73,36 @@ struct ToDoDataService: ToDoTasksFetching {
     }
     
     /// POST task
-    func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem? {
+    func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem {
         guard let baseURL else { throw .requestBuildFailure }
 
         do {
             let request = try Request(method: .post, baseURL: baseURL, path: "tasks", body: item).make()
             let response: ToDoItemData = try await client.run(request: request)
-            return ToDoItem(from: response)
+            guard let item = ToDoItem(from: response) else {
+                throw ToDoServiceError.invalidDataFailure
+            }
+            return item
         } catch {
             throw .networkFailure(error as! HTTPError)
         }
     }
 
     /// PUT update task
-    func putTask(_ id: String) async throws(ToDoServiceError) -> ToDoItem? {
-        return nil
+    func putTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem {
+        throw .invalidDataFailure
     }
 
     /// DELETE task
     func deleteTask(_ id: String) async throws(ToDoServiceError) {
     }
-
 }
 
 extension ToDoDataService {
     public func createDefaultTasks() async throws(ToDoServiceError) {
-        let task1 = ToDoItemData(id: nil, taskDescription: "task 1 ios", completed: false)
-        let task2 = ToDoItemData(id: nil, taskDescription: "task 2 ios", completed: true)
-        let task3 = ToDoItemData(id: nil, taskDescription: "task 3 ios", completed: false)
+        let task1 = ToDoItemData(id: nil, taskDescription: "task 1 ios", createdDate: nil, dueDate: Date.now.formatted(.iso8601), completed: false)
+        let task2 = ToDoItemData(id: nil, taskDescription: "task 2 ios", createdDate: nil, dueDate: Date.distantFuture.formatted(.iso8601),  completed: true)
+        let task3 = ToDoItemData(id: nil, taskDescription: "task 3 ios", createdDate: nil, dueDate: Date.distantPast.formatted(.iso8601),  completed: false)
         let tasks = [task1, task2, task3]
         for task in tasks {
             do {
