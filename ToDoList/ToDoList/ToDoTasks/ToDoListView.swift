@@ -8,29 +8,37 @@
 import SwiftUI
 
 struct ToDoListView: View {
-    @State private var viewModel = ToDoListViewModel()
-//    public var toDoItems: [ToDoItem]
+    @State var viewModel = ToDoListViewModel()
     var body: some View {
         VStack {
-            Header()
+            header
         }
         .padding()
         List(viewModel.items) {
             TaskView(item: $0)
         }
     }
-}
 
-struct Header: View {
-    var body: some View {
+    var header: some View {
         HStack {
-            Image(systemName: "gear")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
+            Button("Edit", systemImage: "gearshape.fill", action: {
+                viewModel.getAllToDoItems()
+            })
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            .foregroundStyle(.tint)
+            
+            Button("Refresh", systemImage: "arrow.clockwise", action: {
+                viewModel.getAllToDoItems()
+            })
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            .foregroundStyle(.tint)
+
             Spacer()
             Text("Task List")
             Spacer()
-            Image(systemName: "plus")
+            Image(systemName: "plus.circle.fill")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
         }
@@ -45,13 +53,19 @@ struct TaskView: View {
         HStack {
             Button("Edit", systemImage: "pencil", action: {})
                 .labelStyle(.iconOnly)
+                .imageScale(.large)
+
             Spacer()
             TaskDetails(item: item)
             Spacer()
             Button("Checkbox", systemImage: "square", action: {})
                 .labelStyle(.iconOnly)
-            Button("Delete", systemImage: "trash", action: {})
+                .imageScale(.large)
+
+            Button("Delete", systemImage: "trash.fill", action: {})
                 .labelStyle(.iconOnly)
+                .imageScale(.large)
+
         }
     }
 }
@@ -72,6 +86,7 @@ struct TaskDetails: View {
     let itemB = ToDoItem(id: 1, taskDescription: "itemB", createdDate: .distantPast, dueDate: .distantFuture, completed: true)
     let itemC = ToDoItem(id: 2, taskDescription: "itemC", createdDate: .distantPast, dueDate: .distantPast, completed: false)
     let itemD = ToDoItem(id: 3, taskDescription: "itemD", createdDate: .distantPast, dueDate: .distantPast, completed: true)
-//    ToDoListView(toDoItems: [itemA, itemB, itemC, itemD])
-    
+    let vm = ToDoListViewModel.init(items: [itemA, itemB, itemC, itemD])
+//    vm.items = [itemA, itemB, itemC, itemD]
+    ToDoListView(viewModel: vm)
 }
