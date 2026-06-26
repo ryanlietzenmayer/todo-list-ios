@@ -92,7 +92,18 @@ struct ToDoDataService: ToDoTasksFetching {
 
     /// PUT update task
     func putTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem {
-        throw .invalidDataFailure
+        guard let baseURL, let itemId = item.id else { throw .requestBuildFailure }
+
+        do {
+            let request = try Request(method: .put, baseURL: baseURL, path: "tasks/\(itemId)", body: item).make()
+            let response: ToDoItemData = try await client.run(request: request)
+            guard let item = ToDoItem(from: response) else {
+                throw ToDoServiceError.invalidDataFailure
+            }
+            return item
+        } catch {
+            throw .networkFailure(error as! HTTPError)
+        }
     }
 
     /// DELETE task
@@ -101,7 +112,7 @@ struct ToDoDataService: ToDoTasksFetching {
 
         do {
             let request = try Request(method: .delete, baseURL: baseURL, path: "tasks/\(id)").make()
-            let response: Data = try await client.run(request: request)
+            let _: Data = try await client.run(request: request)
         } catch {
             throw .networkFailure(error as! HTTPError)
         }

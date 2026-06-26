@@ -6,44 +6,8 @@
 //
 
 import Foundation
-import AVFoundation
-import Foundation
 import Observation
 import SwiftUI
-
-@MainActor
-@Observable
-final class ToDoItemViewModel {
-    var item: ToDoItem
-    
-    private let service: ToDoTasksFetching
-    
-    init(item: ToDoItem) {
-        self.item = item
-        self.service = ToDoDataService()
-    }
-    
-    func toggleCompleted() {
-        Task { @MainActor in
-            do {
-                item.completed = !item.completed
-                item = try await service.putTask(ToDoItemData(from:item))
-            } catch {
-                
-            }
-        }
-    }
-    
-    func delete() {
-        Task { @MainActor in
-            do {
-                try await service.deleteTask(item.id)
-            } catch {
-                
-            }
-        }
-    }
-}
 
 @MainActor
 @Observable

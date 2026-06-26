@@ -10,74 +10,87 @@ import SwiftUI
 struct ToDoListView: View {
     @State var viewModel = ToDoListViewModel()
     var body: some View {
-        VStack {
-            header
-        }
-        .padding()
-        List(viewModel.items) {
-            TaskView(itemViewModel: ToDoItemViewModel(item: $0))
+        NavigationStack {
+            VStack {
+                header
+            }
+            .padding()
+            List(viewModel.items) {
+                TaskView(itemViewModel: ToDoItemViewModel(item: $0))
+            }
         }
     }
-
+    
     var header: some View {
         HStack {
+                Button("Settings", systemImage: "gearshape.fill", action: {
+                    viewModel.getAllToDoItems()
+                })
+                .labelStyle(.iconOnly)
+                .imageScale(.large)
+                
+                Button("Refresh", systemImage: "arrow.clockwise", action: {
+                    viewModel.getAllToDoItems()
+                })
+                .labelStyle(.iconOnly)
+                .imageScale(.large)
             
-            Button("Settings", systemImage: "gearshape.fill", action: {
-                viewModel.getAllToDoItems()
-            })
-            .labelStyle(.iconOnly)
-            .imageScale(.large)
-            .foregroundStyle(.tint)
-            
-            Button("Refresh", systemImage: "arrow.clockwise", action: {
-                viewModel.getAllToDoItems()
-            })
-            .labelStyle(.iconOnly)
-            .imageScale(.large)
-            .foregroundStyle(.tint)
-
             Spacer()
             Text("Task List")
             Spacer()
-            Image(systemName: "plus.circle.fill")
+            
+            Button("Add Section", systemImage: "plus.circle.fill", action: addSection)
+                .labelStyle(.iconOnly)
                 .imageScale(.large)
-                .foregroundStyle(.tint)
+            
         }
     }
+    
+    func addSection() {
+        //        let section = ReminderList()
+        //        modelContext.insert(section)
+        //        path = [section]
+    }
+    
 }
 
 struct TaskView: View {
     // @some state environment for a task
-    public var itemViewModel: ToDoItemViewModel
-
+    @State public var itemViewModel: ToDoItemViewModel
+    
     var body: some View {
         HStack {
             Button("Edit", systemImage: "pencil", action: {
                 print("tap pencil")
             })
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
-                .buttonStyle(BorderlessButtonStyle())
-
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            .buttonStyle(BorderlessButtonStyle())
+            
             Spacer()
             TaskDetails(item: itemViewModel.item)
             Spacer()
-            Button("Checkbox", systemImage: "square", action: {
+            // "square"
+            Button("Checkbox",
+                   systemImage: itemViewModel.item.completed
+                   ? "checkmark.square.fill"
+                   : "square",
+                   action: { //$itemViewModel in
                 print("tap square")
                 itemViewModel.toggleCompleted()
             })
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
-                .buttonStyle(BorderlessButtonStyle())
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            .buttonStyle(BorderlessButtonStyle())
             Spacer()
-
+            
             Button("Delete", systemImage: "trash.fill", action: {
                 print("tap trash")
                 itemViewModel.delete()
             })
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
-                .buttonStyle(BorderlessButtonStyle())
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            .buttonStyle(BorderlessButtonStyle())
         }
     }
 }
@@ -87,6 +100,7 @@ struct TaskDetails: View {
     var body: some View {
         VStack {
             Text(item.taskDescription)
+            //                .alignment(.leading)
             Text(item.dueDateString)
             Text(item.createdDateString)
         }
@@ -99,6 +113,6 @@ struct TaskDetails: View {
     let itemC = ToDoItem(id: 2, taskDescription: "itemC", createdDate: .distantPast, dueDate: .distantPast, completed: false)
     let itemD = ToDoItem(id: 3, taskDescription: "itemD", createdDate: .distantPast, dueDate: .distantPast, completed: true)
     let vm = ToDoListViewModel.init(items: [itemA, itemB, itemC, itemD])
-//    vm.items = [itemA, itemB, itemC, itemD]
+    //    vm.items = [itemA, itemB, itemC, itemD]
     ToDoListView(viewModel: vm)
 }
