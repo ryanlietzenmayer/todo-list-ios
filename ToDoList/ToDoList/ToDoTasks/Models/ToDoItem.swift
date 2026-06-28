@@ -9,10 +9,10 @@ import Foundation
 
 public struct ToDoItem: Identifiable, Hashable {
     public let id: Int
-    public let taskDescription: String
+    public var taskDescription: String
     public let createdDate: Date
-    public let dueDate: Date?
-    public var completed: Bool
+    public var dueDate: Date?
+    public var completed: Bool = false
     
     public var createdDateString: String {
         "Created: " + dateString(createdDate)
@@ -31,6 +31,15 @@ public struct ToDoItem: Identifiable, Hashable {
 }
 
 extension ToDoItem {
+    
+    /// New task
+    init(taskDescription: String) {
+        self.id = -1
+        self.taskDescription = taskDescription
+        self.createdDate = Date.now
+        self.dueDate = nil
+    }
+    
     init?(from todoItemData: ToDoItemData) {
         guard let id = todoItemData.id, let taskDescription = todoItemData.taskDescription else { return nil }
                 

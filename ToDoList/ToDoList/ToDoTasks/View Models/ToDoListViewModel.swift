@@ -57,7 +57,7 @@ final class ToDoListViewModel {
     func create(_ item: ToDoItem) {
         Task { @MainActor in
             do {
-                let createdItem = try await service.createTask(ToDoItemData(from: item))
+                let createdItem = try await service.createTask(ToDoItemData(from: item, isCreate: true))
                 self.items.append(createdItem)
             } catch {
                 

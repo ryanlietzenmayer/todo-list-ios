@@ -16,13 +16,13 @@ public struct ToDoItemData: Encodable, Decodable {
 }
 
 extension ToDoItemData {
-    init(from todoItem: ToDoItem) {
+    init(from todoItem: ToDoItem, isCreate: Bool = false) {
         var dueDateString: String? = nil
         if let dueDate = todoItem.dueDate {
             dueDateString = dueDate.formatted(.iso8601)
         }
         
-        self.init(id: todoItem.id,
+        self.init(id: isCreate ? nil : todoItem.id,
                   taskDescription: todoItem.taskDescription,
                   createdDate: todoItem.createdDate.formatted(.iso8601),
                   dueDate: dueDateString,
