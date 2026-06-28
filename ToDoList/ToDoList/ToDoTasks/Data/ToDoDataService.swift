@@ -75,6 +75,7 @@ struct ToDoDataService: ToDoTasksFetching {
     }
     
     /// POST task
+    @discardableResult
     func createTask(_ item: ToDoItemData) async throws(ToDoServiceError) -> ToDoItem {
         guard let baseURL else { throw .requestBuildFailure }
 

@@ -21,41 +21,28 @@ struct ToDoListView: View {
                     TaskView(itemViewModel: vmitem) {
                         removeItem(item)
                     }
-//                    TaskView(itemViewModel:
-                                
-//                                ToDoItemViewModel(item: item),
-//                             onDelete: removeItem)
-//                        .onDelete(perform: removeItems)
                 }
             }
-            
-//            List {
-//                ForEach(viewModel.items) { item in
-//                    Text(item.taskDescription)
-//                }
-//                .onDelete(perform: removeItems)
-//
-//            }
         }
     }
     
     func removeItem(_ item: ToDoItem) {
         viewModel.items.removeAll(where: { $0.id == item.id })
     }
-
+    
     var header: some View {
         HStack {
-                Button("Settings", systemImage: "gearshape.fill", action: {
-                    viewModel.getAllToDoItems()
-                })
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
-                
-                Button("Refresh", systemImage: "arrow.clockwise", action: {
-                    viewModel.getAllToDoItems()
-                })
-                .labelStyle(.iconOnly)
-                .imageScale(.large)
+            Button("Settings", systemImage: "gearshape.fill", action: {
+                viewModel.getAllToDoItems()
+            })
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
+            
+            Button("Refresh", systemImage: "arrow.clockwise", action: {
+                viewModel.getAllToDoItems()
+            })
+            .labelStyle(.iconOnly)
+            .imageScale(.large)
             
             Spacer()
             Text("Task List")
@@ -80,7 +67,7 @@ struct TaskView: View {
     // @some state environment for a task
     @State public var itemViewModel: ToDoItemViewModel
     let onDelete: () -> Void // Closure to trigger deletion
-
+    
     var body: some View {
         HStack {
             Button("Edit", systemImage: "pencil", action: {
