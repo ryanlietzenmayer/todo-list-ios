@@ -13,7 +13,7 @@ import SwiftUI
 @Observable
 final class ToDoListViewModel {
     
-    var items: [ToDoItem] = []
+    var items = [ToDoItem]()
     
     private let service: ToDoTasksFetching
     private var getItemsTask: Task<Void, Never>?
