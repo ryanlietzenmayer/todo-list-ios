@@ -20,7 +20,7 @@ struct ToDoListView: View {
                 header
             }
             .padding()
-
+            
             List {
                 ForEach(viewModel.items) { item in
                     let vmitem = ToDoItemViewModel(item: item)
@@ -42,7 +42,7 @@ struct ToDoListView: View {
         ZStack {
             Text("Task List")
                 .font(.title2)
-
+            
             HStack {
                 Button("Settings", systemImage: "gearshape.fill", action: {
                     viewModel.getAllToDoItems()
@@ -65,7 +65,8 @@ struct ToDoListView: View {
                 .imageScale(.large)
             }
             .sheet(isPresented: $isAddItemDialogPresented) {
-                AddToDoView { item in
+                AddToDoView(item: ToDoItem(taskDescription: ""),
+                            isCreate: true) { item in
                     viewModel.create(item)
                 }
             }
@@ -85,14 +86,24 @@ struct TaskView: View {
     @State public var itemViewModel: ToDoItemViewModel
     let onDelete: () -> Void // Closure to trigger deletion
     
+    @State var showingDetail = false
+    
     var body: some View {
         HStack(spacing: 16) {
-            Button("Edit", systemImage: "pencil", action: {
-                print("tap pencil")
-            })
-            .labelStyle(.iconOnly)
-            .imageScale(.large)
-            .buttonStyle(BorderlessButtonStyle())
+            
+            Button(action: {
+                self.showingDetail.toggle()
+            }) {
+                Label("Edit", systemImage: "pencil")
+                    .labelStyle(.iconOnly)
+                    .imageScale(.large)
+                    .buttonStyle(BorderlessButtonStyle())
+            }.sheet(isPresented: $showingDetail) {
+                AddToDoView(item: itemViewModel.item,
+                            isCreate: false) { item in
+                    itemViewModel.editCompleted(item)
+                }
+            }
             
             TaskDetails(item: itemViewModel.item)
             
@@ -103,7 +114,6 @@ struct TaskView: View {
                    ? "checkmark.square.fill"
                    : "square",
                    action: {
-                print("tap square")
                 itemViewModel.toggleCompleted()
             })
             .labelStyle(.iconOnly)
@@ -111,7 +121,6 @@ struct TaskView: View {
             .buttonStyle(BorderlessButtonStyle())
             
             Button("Delete", systemImage: "trash.fill", action: {
-                print("tap trash")
                 itemViewModel.delete()
                 onDelete()
             })
@@ -145,6 +154,5 @@ struct TaskDetails: View {
                          dueDate: .distantPast,
                          completed: true)
     let vm = ToDoListViewModel.init(items: [itemA, itemB, itemC, itemD])
-    //    vm.items = [itemA, itemB, itemC, itemD]
     ToDoListView(viewModel: vm)
 }

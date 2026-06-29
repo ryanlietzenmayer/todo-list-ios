@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct AddToDoView: View {
+        
     @State
-    private var item = ToDoItem(taskDescription: "")
+    public var item: ToDoItem
+    
+    public let isCreate: Bool
     
     @Environment(\.dismiss)
     private var dismiss
@@ -23,22 +26,31 @@ struct AddToDoView: View {
     
     var body: some View {
         NavigationStack {
-            Text("Create")
+            Text(isCreate ? "Create" : "Edit")
                 .font(.title2)
+                .padding(20)
             
             Form {
                 TextField("To-Do Item Name", text: $item.taskDescription)
+                    .padding(20)
+                
+                DatePicker("Select Due Date",
+                           selection: $item.dueDate,
+                           displayedComponents: [.date])
             }
+            .scrollContentBackground(.hidden)
 
             Button(action: save) {
                 Text("Save")
             }
+            .padding(30)
         }
     }
 }
 
 #Preview {
-    AddToDoView { _ in
-        
+    AddToDoView(item: ToDoItem(taskDescription: "Edit me",
+                               dueDate: .distantFuture),
+                    isCreate: true) { _ in
     }
 }

@@ -25,9 +25,19 @@ final class ToDoItemViewModel {
         Task { @MainActor in
             do {
                 item.completed = !item.completed
-                item = try await service.putTask(ToDoItemData(from:item))
+                item = try await service.putTask(ToDoItemData(from: item))
             } catch {
                 
+            }
+        }
+    }
+    
+    func editCompleted(_ editedItem: ToDoItem) {
+        Task { @MainActor in
+            do {
+                item = try await service.putTask(ToDoItemData(from: editedItem))
+            } catch {
+                print("error on edit")
             }
         }
     }
